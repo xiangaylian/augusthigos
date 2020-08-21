@@ -1,5 +1,5 @@
-﻿#undef UnSafe_Singleton
-#define Safe_Singleton
+﻿#define UnSafe_Singleton
+#undef Safe_Singleton
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -296,9 +296,7 @@ namespace SingletonDesignPattern
             string regKey = typeof(T).Name;
             if (!_regs.ContainsKey(regKey))
             {
-                // 如果T的构造函数受保护，使用Activator.CreateInstance<T>无法访问构造函数
-                // 如果T的构造函数公开的话，又违反了单例模式只能被自己创建一次的约束
-                // 可能是基于上述两点，百度上很难搜到C# 使用登记式单例模式的例子
+                // 因为创建对象的时间长，到这里就会报错了，提示添加了重复的Key
                 _regs.Add(regKey, Activator.CreateInstance(typeof(T), true));
             }
 
@@ -311,9 +309,6 @@ namespace SingletonDesignPattern
             string regKey = typeof(T).Name;
             if (!_regs.ContainsKey(regKey))
             {
-                // 如果T的构造函数受保护，使用Activator.CreateInstance<T>无法访问构造函数
-                // 如果T的构造函数公开的话，又违反了单例模式只能被自己创建一次的约束
-                // 可能是基于上述两点，百度上很难搜到C# 使用登记式单例模式的例子
                 lock(_lockObj)
                 {
                     if (!_regs.ContainsKey(regKey))
